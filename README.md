@@ -1,2 +1,2 @@
-# argocd-demo
+# gitops-demo-app (Go)
 
