@@ -1,8 +1,6 @@
 image:
   name: gcr.io/kaniko-project/executor:debug
   entrypoint: [""]
-services:
-  - docker:19.03.12-dind
 stages:
   - build
   - deploy
