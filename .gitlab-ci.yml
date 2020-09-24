@@ -1,6 +1,6 @@
-image: docker:19.03.7
+image: docker:19.03.12
 services:
-  - docker:19.03.7-dind
+  - docker:19.03.12-dind
 stages:
   - build
   - deploy
@@ -20,6 +20,7 @@ variables:
 ##                              Custom Script                               ##
 ##############################################################################
 before_script:
+  - docker info
   - echo $CI_REGISTRY_IMAGE:$TAG $PWD
   # login
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
@@ -77,7 +78,7 @@ tag_latest_image:
     # - cd $CD_CHART_REPO
     # # Helm
     # - >
-      # docker run --rm -v ${PWD}:/workdir mikefarah/yq:3.2.1 yq write 
+      # docker run --rm -v ${PWD}:/workdir mikefarah/yq:3.2.1 yq write
       # --inplace --verbose $CD_MANIFEST_FILE appVersion $TAG
     # - cat $CD_MANIFEST_FILE
     # - git commit -am "update image tag" && git push origin master
