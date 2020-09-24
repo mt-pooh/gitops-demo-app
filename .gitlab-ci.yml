@@ -39,6 +39,7 @@ build_image:
       --destination $CI_REGISTRY_IMAGE:$TAG
       --build-arg COMMIT_HASH=$CI_COMMIT_SHORT_SHA
       --insecure
+      --skip-tls-verify
 
 ##############################################################################
 ##                              Deployments                                 ##
@@ -55,6 +56,7 @@ tag_latest_image:
       --destination $CI_REGISTRY_IMAGE:latest
       --build-arg COMMIT_HASH=$CI_COMMIT_SHORT_SHA
       --insecure
+      --skip-tls-verify
 
 
 # update_manifest:
