@@ -1,4 +1,6 @@
-image: docker:19.03.12
+image:
+  name: gcr.io/kaniko-project/executor:debug
+  entrypoint: [""]
 services:
   - docker:19.03.12-dind
 stages:
@@ -20,13 +22,9 @@ variables:
 ##                              Custom Script                               ##
 ##############################################################################
 before_script:
-  - docker info
   - echo $CI_REGISTRY_IMAGE:$TAG $PWD
   # login
-  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
-
-after_script:
-  - docker image prune -af
+  - echo "{\"auths\":{\"https://index.docker.io/v2/\":{\"auth\":\"${DOCKERHUB_TOKEN}\"}}}" > /kaniko/.docker/config.json
 
 ##############################################################################
 ##                              Build Image                                 ##
@@ -36,15 +34,12 @@ build_image:
   script:
     # Docker Build && Push image
     - cat Dockerfile
-    - docker pull $CI_REGISTRY_IMAGE:latest || true
     - >
-      docker build
-      --cache-from $CI_REGISTRY_IMAGE:latest
-      --tag $CI_REGISTRY_IMAGE:$TAG
+      /kaniko/executor
+      --context $CI_PROJECT_DIR
+      --dockerfile $CI_PROJECT_DIR/Dockerfile
+      --destination $CI_REGISTRY_IMAGE:$TAG
       --build-args COMMIT_HASH=$CI_COMMIT_SHORT_SHA
-      .
-    - docker push $CI_REGISTRY_IMAGE:$TAG
-
 
 ##############################################################################
 ##                              Deployments                                 ##
@@ -54,9 +49,12 @@ tag_latest_image:
   variables:
     GIT_STRATEGY: none
   script:
-    - docker pull $CI_REGISTRY_IMAGE:$TAG
-    - docker tag $CI_REGISTRY_IMAGE:$TAG $CI_REGISTRY_IMAGE:latest
-    - docker push $CI_REGISTRY_IMAGE:latest
+    - >
+      /kaniko/executor
+      --context $CI_PROJECT_DIR
+      --dockerfile $CI_PROJECT_DIR/Dockerfile
+      --destination $CI_REGISTRY_IMAGE:latest
+      --build-args COMMIT_HASH=$CI_COMMIT_SHORT_SHA
 
 
 # update_manifest:
