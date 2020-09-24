@@ -38,6 +38,7 @@ build_image:
       --dockerfile $CI_PROJECT_DIR/Dockerfile
       --destination $CI_REGISTRY_IMAGE:$TAG
       --build-arg COMMIT_HASH=$CI_COMMIT_SHORT_SHA
+      --insecure
 
 ##############################################################################
 ##                              Deployments                                 ##
@@ -53,6 +54,7 @@ tag_latest_image:
       --dockerfile $CI_PROJECT_DIR/Dockerfile
       --destination $CI_REGISTRY_IMAGE:latest
       --build-arg COMMIT_HASH=$CI_COMMIT_SHORT_SHA
+      --insecure
 
 
 # update_manifest:
