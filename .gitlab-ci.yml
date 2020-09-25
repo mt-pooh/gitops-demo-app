@@ -73,6 +73,7 @@ open_merge_request:
   stage: open_MR
   variables:
     GIT_STRATEGY: none
+    # Information on the repository that open MR
     CD_COMMIT_REF_NAME: update-image-tag-$TAG
     CD_PROJECT_ID: 992
     CD_PROJECT_URL: http://gitlab.fdev/kmuguruma/gitops-demo-chart
@@ -80,9 +81,9 @@ open_merge_request:
     # Create merge request
     - >
       gitlab_auto_mr
-      --source-branch CD_COMMIT_REF_NAME
-      --project-id CD_PROJECT_ID
-      --gitlab-url CD_PROJECT_URL
+      --source-branch $CD_COMMIT_REF_NAME
+      --project-id $CD_PROJECT_ID
+      --gitlab-url $CD_PROJECT_URL
       -t master -c WIP -r
   only:
     - master
