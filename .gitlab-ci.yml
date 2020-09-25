@@ -65,6 +65,7 @@ update_manifest:
     # Add SSH key to root
     - mkdir -p /root/.ssh
     - echo "$SSH_PRIVATE_KEY" > /root/.ssh/id_rsa
+    - apk add --no-ceche openssh
     - ssh-keyscan -H gitlab.fdev > /root/.ssh/known_hosts
     - chmod 600 /root/.ssh/id_rsa
     # Git
