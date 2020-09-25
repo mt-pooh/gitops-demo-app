@@ -9,7 +9,7 @@ stages:
 variables:
   APP_NAME: gitops-demo-app
   CI_REGISTRY_IMAGE: musyu/$APP_NAME
-  CD_PROJECT_ID: 992
+  CD_PROJECT_ID: "992"
   CD_CHART_REPO: gitops-demo-chart
   CD_GIT_REPOSITORY: git@gitlab.fdev:kmuguruma/$CD_CHART_REPO.git
   CD_PROJECT_URL: http://gitlab.fdev/kmuguruma/$CD_CHART_REPO
