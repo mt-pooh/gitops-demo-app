@@ -36,7 +36,7 @@ build_image:
       /kaniko/executor
       --context $CI_PROJECT_DIR
       --dockerfile $CI_PROJECT_DIR/Dockerfile
-      --destination $CI_REGISTRY_IMAGE:$TAG $CI_REGISTRY_IMAGE:latest
+      --destination $CI_REGISTRY_IMAGE:$TAG
       --build-arg COMMIT_HASH=$CI_COMMIT_SHORT_SHA
 
 ##############################################################################
