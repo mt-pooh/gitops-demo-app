@@ -14,7 +14,6 @@ variables:
   CD_GIT_REPOSITORY: git@gitlab.fdev:kmuguruma/$CD_CHART_REPO.git
   CD_MANIFEST_FILE: Chart.yaml
   TAG: $CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
-  CD_BRANCH_NAME: update-image-tag-$TAG
 
 ##############################################################################
 ##                              Build Image                                 ##
@@ -60,13 +59,13 @@ update_manifest:
     - git config --global user.email $APP_NAME"@gitlab.com"
     - git clone --single-branch --branch master $CD_GIT_REPOSITORY
     - cd $CD_CHART_REPO
-    - git checkout -b $CD_BRANCH_NAME
+    - git checkout -b update-image-tag-$TAG
     # Update Helm image tag
     - >
       yq write
       --inplace --verbose $CD_MANIFEST_FILE appVersion $TAG
     - cat $CD_MANIFEST_FILE
-    - git commit -am "update image tag" && git push origin $CD_BRANCH_NAME
+    - git commit -am "update image tag" && git push origin update-image-tag-$TAG
   only:
     - master
 
@@ -79,9 +78,9 @@ open_merge_request:
     # Create merge request
     - >
       gitlab_auto_mr
-      --source-branch $CD_BRANCH_NAME
+      --source-branch update-image-tag-$TAG
       --project-id $CD_PROJECT_ID
-      -t master -d $CD_BRANCH_NAME
+      -t master
       -c WIP -r
   only:
     - master
