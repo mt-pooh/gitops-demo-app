@@ -36,24 +36,12 @@ build_image:
       /kaniko/executor
       --context $CI_PROJECT_DIR
       --dockerfile $CI_PROJECT_DIR/Dockerfile
-      --destination $CI_REGISTRY_IMAGE:$TAG
+      --destination $CI_REGISTRY_IMAGE:$TAG $CI_REGISTRY_IMAGE:latest
       --build-arg COMMIT_HASH=$CI_COMMIT_SHORT_SHA
 
 ##############################################################################
 ##                              Deployments                                 ##
 ##############################################################################
-tag_latest_image:
-  stage: deploy
-  variables:
-    GIT_STRATEGY: none
-  script:
-    - >
-      /kaniko/executor
-      --context $CI_PROJECT_DIR
-      --dockerfile $CI_PROJECT_DIR/Dockerfile
-      --destination $CI_REGISTRY_IMAGE:latest
-      --build-arg COMMIT_HASH=$CI_COMMIT_SHORT_SHA
-
 update_manifest:
   image: mikefarah/yq:3.3.4
   stage: deploy
