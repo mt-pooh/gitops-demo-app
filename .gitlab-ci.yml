@@ -69,9 +69,5 @@ update_manifest:
       --inplace --verbose $CD_MANIFEST_FILE appVersion $TAG
     - cat $CD_MANIFEST_FILE
     - git commit -am "update image tag" && git push origin update-image-tag-$TAG
-    # Create MR
-    - apk add --no-cache lab --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community
-    - lab merge-request -m "update image tag:"$TAG -d
   only:
-    refs:
-      - master
+    - master
