@@ -69,3 +69,6 @@ update_manifest:
       --inplace --verbose $CD_MANIFEST_FILE appVersion $TAG
     - cat $CD_MANIFEST_FILE
     - git commit -am "update image tag" && git push origin update-image-tag-$TAG
+    # Create MR
+    - apk add --no-cache lab
+    - lab merge-request -m "update image tag:"$TAG -d
