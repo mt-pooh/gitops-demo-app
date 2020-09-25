@@ -60,6 +60,7 @@ update_manifest:
   variables:
     GIT_STRATEGY: none
   retry: 2
+  before_script: []
   script:
     # Add SSH key to root
     - mkdir -p /root/.ssh
