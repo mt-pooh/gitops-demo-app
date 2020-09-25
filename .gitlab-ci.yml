@@ -72,3 +72,6 @@ update_manifest:
     # Create MR
     - apk add --no-cache lab
     - lab merge-request -m "update image tag:"$TAG -d
+  only:
+    refs:
+      - master
