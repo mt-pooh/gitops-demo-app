@@ -12,7 +12,6 @@ variables:
   CD_PROJECT_ID: "992"
   CD_CHART_REPO: gitops-demo-chart
   CD_GIT_REPOSITORY: git@gitlab.fdev:kmuguruma/$CD_CHART_REPO.git
-  CD_PROJECT_URL: http://gitlab.fdev/kmuguruma/$CD_CHART_REPO
   CD_MANIFEST_FILE: Chart.yaml
   TAG: $CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
   CD_BRANCH_NAME: update-image-tag-$TAG
@@ -77,13 +76,11 @@ open_merge_request:
   variables:
     GIT_STRATEGY: none
   script:
-    - echo $GITLAB_USER_ID
     # Create merge request
     - >
       gitlab_auto_mr
       --source-branch $CD_BRANCH_NAME
       --project-id $CD_PROJECT_ID
-      --gitlab-url $CD_PROJECT_URL
       -t master -d $CD_BRANCH_NAME
       -c WIP -r
   only:
