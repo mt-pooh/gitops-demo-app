@@ -3,7 +3,8 @@ image:
   entrypoint: [""]
 stages:
   - build
-  - deploy
+  - update_manifest
+  - open_MR
 
 ##############################################################################
 ##                              Variables                                   ##
@@ -17,18 +18,14 @@ variables:
   TAG: $CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
 
 ##############################################################################
-##                              Custom Script                               ##
-##############################################################################
-before_script:
-  - echo $CI_REGISTRY_IMAGE:$TAG $PWD
-  # login
-  - echo "{\"auths\":{\"https://index.docker.io/v2/\":{\"auth\":\"${DOCKERHUB_TOKEN}\"}}}" > /kaniko/.docker/config.json
-
-##############################################################################
 ##                              Build Image                                 ##
 ##############################################################################
 build_image:
   stage: build
+  before_script:
+    - echo $CI_REGISTRY_IMAGE:$TAG $PWD
+    # login
+    - echo "{\"auths\":{\"https://index.docker.io/v2/\":{\"auth\":\"${DOCKERHUB_TOKEN}\"}}}" > /kaniko/.docker/config.json
   script:
     # Docker Build && Push image
     - cat Dockerfile
@@ -44,11 +41,10 @@ build_image:
 ##############################################################################
 update_manifest:
   image: mikefarah/yq:3.3.4
-  stage: deploy
+  stage: update_manifest
   variables:
     GIT_STRATEGY: none
   retry: 2
-  before_script: []
   script:
     # Add SSH key to root
     - mkdir -p /root/.ssh
@@ -69,5 +65,24 @@ update_manifest:
       --inplace --verbose $CD_MANIFEST_FILE appVersion $TAG
     - cat $CD_MANIFEST_FILE
     - git commit -am "update image tag" && git push origin update-image-tag-$TAG
+  only:
+    - master
+
+open_merge_request:
+  image: registry.gitlab.com/gitlab-automation-toolkit/gitlab-auto-mr
+  stage: open_MR
+  variables:
+    GIT_STRATEGY: none
+    CD_COMMIT_REF_NAME: update-image-tag-$TAG
+    CD_PROJECT_ID: 992
+    CD_PROJECT_URL: http://gitlab.fdev/kmuguruma/gitops-demo-chart
+  script:
+    # Create merge request
+    - >
+      gitlab_auto_mr
+      --source-branch CD_COMMIT_REF_NAME
+      --project-id CD_PROJECT_ID
+      --gitlab-url CD_PROJECT_URL
+      -t master -c WIP -r
   only:
     - master
