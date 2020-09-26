@@ -3,20 +3,14 @@ FROM golang:1.14 as builder
 WORKDIR /app
 COPY . /app/
 
-RUN go get github.com/gin-gonic/gin
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -ldflags="-s -w" -installsuffix cgo -o hello main.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -ldflags="-s -w" -installsuffix cgo -o main main.go
 
 FROM alpine:3.12
+LABEL maintaner="Koki Muguruma <koki_muguruma@forcia.com>"
 
-COPY --from=builder /app/hello /bin/hello
-COPY --from=builder /app/templates/ /app/templates/
-WORKDIR /app
-
-ARG COMMIT_HASH="null"
-
-# COMMIT_HASH変数を環境変数に設定
-ENV COMMIT_HASH ${COMMIT_HASH}
+COPY . .
+COPY --from=builder /app/main /bin/main
 
 EXPOSE 8080
 
-CMD /bin/hello ${COMMIT_HASH}
+CMD ["/bin/main"]
