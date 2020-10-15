@@ -11,6 +11,8 @@ LABEL maintaner="Koki Muguruma <koki_muguruma@forcia.com>"
 COPY . .
 COPY --from=builder /app/main /bin/main
 
+RUN ln -sf config/config.prod.json config.json
+
 EXPOSE 8080
 
 CMD ["/bin/main"]
