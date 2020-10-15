@@ -20,7 +20,7 @@ variables:
 ##############################################################################
 build_image:
   image:
-    name: mgit/base:kaniko-executor-debug-stable
+    name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
   stage: build
   before_script:
