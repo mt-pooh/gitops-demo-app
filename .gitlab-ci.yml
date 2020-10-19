@@ -35,6 +35,7 @@ build_image:
       --context $CI_PROJECT_DIR
       --dockerfile $CI_PROJECT_DIR/Dockerfile
       --destination $CI_REGISTRY_IMAGE:$TAG
+      --destination $CI_REGISTRY_IMAGE:latest
       --build-arg COMMIT_HASH=$CI_COMMIT_SHORT_SHA
 
 ##############################################################################
