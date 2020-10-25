@@ -57,11 +57,11 @@ jobs:
         with:
           token: ${{ secrets.MY_PAT }} # `GitHub_PAT` is a secret that contains your PAT
           commit-message: Update image tag
-          committer: GitHub <noreply@github.com>
+          committer: GitHub Actions <noreply@github.com>
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           signoff: false
           delete-branch: true
-          branch: update-image-tag-actions-${{ github.sha }}
+          branch: master
           title: Update image tag actions-${{ github.sha }}
           body: |
             Update image tag
