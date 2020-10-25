@@ -5,7 +5,6 @@ on:
     branches: [master]
 
 env:
-  SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
   IMAGE_TAG: actions-${{ github.sha }}
 
 jobs:
@@ -30,7 +29,7 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm64,linux/386
           push: true
-          tags: musyu/gitops-demo-app:actions-$IMAGE_TAG
+          tags: musyu/gitops-demo-app:$IMAGE_TAG
           cache-from: type=registry,ref=musyu/gitops-demo-app:latest
           cache-to: type=inline
   deploy:
@@ -78,23 +77,16 @@ jobs:
         run: |
           echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
           echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
-      # 成功時はこちらのステップが実行される
-      - name: Slack Notification on Success
-        if: success()
-        uses: rtCamp/action-slack-notify@v2.1.0
+  slack-notification:
+    if: always()
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: technote-space/workflow-conclusion-action@v1
+      - uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ env.WORKFLOW_CONCLUSION }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took # selectable (default: repo,message)
         env:
-          SLACK_CHANNEL: zzz_kmuguruma_notice
-          SLACK_TITLE: Pipeline Success
-          SLACK_USERNAME: github actions notify
-          SLACK_ICON: https://github.co.jp/assets/images/features/actions/actions-icon-actions.svg
-          SLACK_COLOR: good
-      # 失敗時はこちらのステップが実行される
-      - name: Slack Notification on Failure
-        uses: rtCamp/action-slack-notify@v2.1.0
-        if: failure()
-        env:
-          SLACK_CHANNEL: zzz_kmuguruma_notice
-          SLACK_TITLE: Pipeline Failure
-          SLACK_USERNAME: github actions notify
-          SLACK_ICON: https://github.co.jp/assets/images/features/actions/actions-icon-actions.svg
-          SLACK_COLOR: danger
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: always() # Pick up events even if the job fails or is canceled.
