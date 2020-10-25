@@ -29,3 +29,23 @@ jobs:
           tags: musyu/gitops-demo-app:actions-${{ github.sha }}
           cache-from: type=registry,ref=musyu/gitops-demo-app:latest
           cache-to: type=inline
+      # 成功時はこちらのステップが実行される
+      - name: Slack Notification on Success
+        if: success()
+        uses: rtCamp/action-slack-notify@v2.1.0
+        env:
+          SLACK_CHANNEL: zzz_kmuguruma_notice
+          SLACK_TITLE: Test Success
+          SLACK_USERNAME: github actions notify
+          SLACK_ICON: https://github.co.jp/assets/images/features/actions/actions-icon-actions.svg
+          SLACK_COLOR: good
+      # 失敗時はこちらのステップが実行される
+      - name: Slack Notification on Failure
+        uses: rtCamp/action-slack-notify@v2.1.0
+        if: failure()
+        env:
+          SLACK_CHANNEL: zzz_kmuguruma_notice
+          SLACK_TITLE: Test Failure
+          SLACK_USERNAME: github actions notify
+          SLACK_ICON: https://github.co.jp/assets/images/features/actions/actions-icon-actions.svg
+          SLACK_COLOR: danger
