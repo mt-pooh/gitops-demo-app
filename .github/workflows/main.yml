@@ -61,7 +61,6 @@ jobs:
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           signoff: false
           delete-branch: true
-          branch: master
           title: Update image tag actions-${{ github.sha }}
           body: |
             Update image tag
