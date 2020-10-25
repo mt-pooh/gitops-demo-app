@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: cat Dockerfile
+        run: cat Dockerfile
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
@@ -29,7 +31,7 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm64,linux/386
           push: true
-          tags: musyu/gitops-demo-app:$IMAGE_TAG
+          tags: musyu/gitops-demo-app:${{ IMAGE_TAG }}
           cache-from: type=registry,ref=musyu/gitops-demo-app:latest
           cache-to: type=inline
   deploy:
@@ -48,9 +50,9 @@ jobs:
           git config user.name 'gitops'
           git config user.email 'gitops@users.noreply.github.com'
           snap install yq
-          yq write --inplace --verbose $CD_MANIFEST_FILE appVersion $IMAGE_TAG
-          cat $CD_MANIFEST_FILE
-          git commit -am "update image tag" && git push origin update-image-tag-$IMAGE_TAG
+          yq write --inplace --verbose ${{ env.CD_MANIFEST_FILE }} appVersion ${{ IMAGE_TAG }}
+          cat ${{env.CD_MANIFEST_FILE}}
+          git commit -am "update image tag" && git push origin update-image-tag-${{ IMAGE_TAG }}
       - name: Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v3
@@ -60,7 +62,7 @@ jobs:
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           signoff: false
           delete-branch: true
-          title: "Update image tag $IMAGE_TAG"
+          title: "Update image tag ${{ IMAGE_TAG }}"
           body: |
             Update image tag
             - Updated with build image tag
