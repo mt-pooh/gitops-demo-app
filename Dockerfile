@@ -15,7 +15,6 @@ RUN useradd -m -u ${FORCIA_UID} forcia
 USER forcia
 
 COPY --chown=forcia . .
-RUN ln -sf config/config.prod.json config.json
 
 EXPOSE 8080
 
