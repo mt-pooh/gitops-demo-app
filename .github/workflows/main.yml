@@ -42,9 +42,11 @@ jobs:
       - name: Update image tag
         env:
           CD_MANIFEST_FILE: Chart.yaml
+          GITHUB_TOKEN: ${{ secrets.MY_PAT }}
         run: |
           git config user.name 'gitops'
           git config user.email 'gitops@users.noreply.github.com'
+          git checkout -b update-image-tag-actions-${{ github.sha }}
           docker run --rm -v ${PWD}:/workdir mikefarah/yq \
           yq write --inplace --verbose ${{ env.CD_MANIFEST_FILE }} appVersion actions-${{ github.sha }}
           cat ${{env.CD_MANIFEST_FILE}}
@@ -53,11 +55,13 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@v3
         with:
+          token: ${{ secrets.MY_PAT }} # `GitHub_PAT` is a secret that contains your PAT
           commit-message: Update image tag
           committer: GitHub <noreply@github.com>
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           signoff: false
           delete-branch: true
+          branch: update-image-tag-actions-${{ github.sha }}
           title: Update image tag actions-${{ github.sha }}
           body: |
             Update image tag
