@@ -10,8 +10,10 @@ LABEL maintaner="Koki Muguruma <koki_muguruma@forcia.com>"
 
 COPY --from=builder /app/main /bin/main
 
-ARG FORCIA_UID=1001
-RUN useradd -m -u ${FORCIA_UID} forcia
+RUN addgroup -S forcia \
+  && adduser -S forcia -G forcia \
+  && echo "forcia ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers \
+  && echo 'forcia:forcia' | chpasswd
 USER forcia
 
 COPY --chown=forcia . .
