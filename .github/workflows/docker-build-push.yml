@@ -26,6 +26,4 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm64,linux/386
           push: true
-          tags: musyu/gitops-demo-app:${{ github.sha }}
-          cache-from: type=registry,ref=musyu/gitops-demo-app:latest
-          cache-to: type=inline
+          tags: musyu/gitops-demo-app:actions-${{ github.sha }}
