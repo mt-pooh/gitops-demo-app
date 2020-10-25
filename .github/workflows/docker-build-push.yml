@@ -6,7 +6,6 @@ on:
 
 env:
   SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
-  CD_MANIFEST_FILE: Chart.yaml
   IMAGE_TAG: actions-${{ github.sha }}
 
 jobs:
@@ -38,15 +37,19 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Update image tag
+      - name: Checkout manifest repo
         uses: actions/checkout@v2
         with:
           repository: forcia/gitops-demo-manifest
           path: gitops-demo-manifest
+      - name: Update image tag
+        env:
+          CD_MANIFEST_FILE: Chart.yaml
         run: |
           git config user.name 'gitops'
           git config user.email 'gitops@users.noreply.github.com'
-          yq write --inplace --verbose $CD_MANIFEST_FILE appVersion $TAG
+          snap install yq
+          yq write --inplace --verbose $CD_MANIFEST_FILE appVersion $IMAGE_TAG
           cat $CD_MANIFEST_FILE
           git commit -am "update image tag" && git push origin update-image-tag-$IMAGE_TAG
       - name: Create Pull Request
