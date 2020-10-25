@@ -26,4 +26,4 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm64,linux/386
           push: true
-          tags: musyu/gitops-demo-app:$GITHUB_SHA
+          tags: musyu/gitops-demo-app:${{ GITHUB_SHA }}
