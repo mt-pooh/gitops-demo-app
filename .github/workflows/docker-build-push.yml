@@ -38,7 +38,7 @@ jobs:
         uses: rtCamp/action-slack-notify@v2.1.0
         env:
           SLACK_CHANNEL: zzz_kmuguruma_notice
-          SLACK_TITLE: Test Success
+          SLACK_TITLE: Pipeline Success
           SLACK_USERNAME: github actions notify
           SLACK_ICON: https://github.co.jp/assets/images/features/actions/actions-icon-actions.svg
           SLACK_COLOR: good
@@ -48,7 +48,7 @@ jobs:
         if: failure()
         env:
           SLACK_CHANNEL: zzz_kmuguruma_notice
-          SLACK_TITLE: Test Failure
+          SLACK_TITLE: Pipeline Failure
           SLACK_USERNAME: github actions notify
           SLACK_ICON: https://github.co.jp/assets/images/features/actions/actions-icon-actions.svg
           SLACK_COLOR: danger
