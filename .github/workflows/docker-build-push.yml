@@ -4,6 +4,9 @@ on:
   push:
     branches: master
 
+env:
+  SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+
 jobs:
   path-context:
     runs-on: ubuntu-latest
