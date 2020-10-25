@@ -4,9 +4,6 @@ on:
   push:
     branches: [master]
 
-env:
-  IMAGE_TAG: actions-${{ github.sha }}
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -31,7 +28,7 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm64,linux/386
           push: true
-          tags: musyu/gitops-demo-app:${{ IMAGE_TAG }}
+          tags: musyu/gitops-demo-app:actions-${{ github.sha }}
           cache-from: type=registry,ref=musyu/gitops-demo-app:latest
           cache-to: type=inline
   deploy:
@@ -50,9 +47,9 @@ jobs:
           git config user.name 'gitops'
           git config user.email 'gitops@users.noreply.github.com'
           snap install yq
-          yq write --inplace --verbose ${{ env.CD_MANIFEST_FILE }} appVersion ${{ IMAGE_TAG }}
+          yq write --inplace --verbose ${{ env.CD_MANIFEST_FILE }} appVersion actions-${{ github.sha }}
           cat ${{env.CD_MANIFEST_FILE}}
-          git commit -am "update image tag" && git push origin update-image-tag-${{ IMAGE_TAG }}
+          git commit -am "update image tag" && git push origin update-image-tag-actions-${{ github.sha }}
       - name: Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v3
@@ -62,7 +59,7 @@ jobs:
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           signoff: false
           delete-branch: true
-          title: "Update image tag ${{ IMAGE_TAG }}"
+          title: Update image tag actions-${{ github.sha }}
           body: |
             Update image tag
             - Updated with build image tag
