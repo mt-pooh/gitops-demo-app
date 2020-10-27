@@ -37,7 +37,7 @@ jobs:
       - name: Checkout manifest repo
         uses: actions/checkout@v2
         with:
-          repository: forcia/gitops-demo-manifest
+          repository: mt-pooh/gitops-demo-manifest
           token: ${{ secrets.MY_PAT }} # `GitHub_PAT` is a secret that contains your PAT
       - name: Update image tag
         env:
