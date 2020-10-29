@@ -6,14 +6,14 @@ jobs:
       - setup_remote_docker
       - checkout
       - docker/check:
-          docker-username: $DOCKERHUB_USER
-          docker-password: $DOCKERHUB_PASSWORD
+          docker-username: ${DOCKERHUB_USER}
+          docker-password: ${DOCKERHUB_PASSWORD}
       - docker/build:
-          image: $DOCKERHUB_USER/gitops-demo-app
+          image: ${DOCKERHUB_USER}/gitops-demo-app
           tag: circleci-$CIRCLE_SHA1
       - docker/push:
-          image: $DOCKERHUB_USER/gitops-demo-app
-          tag: circleci-$CIRCLE_SHA1
+          image: ${DOCKERHUB_USER}/gitops-demo-app
+          tag: circleci-${CIRCLE_SHA1}
 orbs:
   docker: circleci/docker@1.5.0
 workflows:
